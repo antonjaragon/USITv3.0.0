@@ -182,3 +182,14 @@ Face/Face-part detection
  * `gfcf` ... Gaussian Face and Face-part Classification Fusion
 
 
+
+Commands used (Windows):
+---------------------
+
+```shell
+manuseg -i .\input_images\001_L_NIR_14.tiff -c .\outputs\001_L_NIR_14.inner.txt .\outputs\001_L_NIR_14.outer.txt "" "" -o .\textures\001_L_NIR_14_texture.bmp -e
+```
+
+```shell
+python .\packages\cnnmasktomanuseg\cnnmasktomanuseg.py .\masks\001_L_NIR_14.png outputs
+```

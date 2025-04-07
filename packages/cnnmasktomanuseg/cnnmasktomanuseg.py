@@ -202,7 +202,7 @@ if __name__ == '__main__':
     #print fname, fbase, fext
     seg = segment(fname)
 
-    seg.plot(saveto=os.path.join(outdir, '%s_best_result.png' % fbase))
-    seg.plotMore(saveto=os.path.join(outdir, '%s_results.png' % fbase))
+    # seg.plot(saveto=os.path.join(outdir, '%s_best_result.png' % fbase))
+    # seg.plotMore(saveto=os.path.join(outdir, '%s_results.png' % fbase))
     seg.sampleTo(seg.pupil, os.path.join(outdir, '%s.inner.txt' % fbase))
     seg.sampleTo(seg.iris, os.path.join(outdir, '%s.outer.txt' % fbase))

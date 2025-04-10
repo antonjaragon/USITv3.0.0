@@ -4,13 +4,13 @@ import numpy as np
 from pathlib import Path
 
 # Base paths
-masks_base = Path('./masks')
-circles_base = Path('./circles')
-input_base = Path('./input_images')
-textures_base = Path('./textures')
+masks_base = Path('./data/masks')
+circles_base = Path('./data/circles')
+input_base = Path('./data/input_images')
+textures_base = Path('./data/textures')
 cnn_script = Path('./packages/cnnmasktomanuseg/cnnmasktomanuseg.py')
-iris_code_base = Path('./irisCode')  # Output folder (where irisCode images will be saved)
-codes_base = Path('./codes')  # Input folder (where .png files are stored after lg conversion)
+iris_code_base = Path('./data/irisCode')  # Output folder (where irisCode images will be saved)
+codes_base = Path('./data/codes')  # Input folder (where .png files are stored after lg conversion)
 
 # Function to calculate USIT code
 def calculate_usit_code(img):
@@ -97,7 +97,7 @@ for mask_file in masks_base.rglob('*.png'):
     ]
 
     # Command 4: run lg command to convert texture to an image
-    output_lg_dir = Path('codes') / relative_path.parent  # Maintain the same relative path structure
+    output_lg_dir = codes_base / relative_path.parent  # Maintain the same relative path structure
     output_lg_dir.mkdir(parents=True, exist_ok=True)  # Create the necessary dirs for lg output
 
     # Using the stem name for the output file

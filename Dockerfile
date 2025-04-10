@@ -59,8 +59,6 @@ RUN wget https://github.com/opencv/opencv/archive/2.4.9.zip && \
     ldconfig
 
 
-# Clean up
-RUN rm -rf /opt/*
 
 
 # Install Miniconda
@@ -83,6 +81,18 @@ RUN /bin/bash -c "source ~/miniconda3/etc/profile.d/conda.sh && \
 
 # # Activate environment by default in bash
 RUN echo "source ~/miniconda3/etc/profile.d/conda.sh && conda activate usit" >> ~/.bashrc
+
+
+WORKDIR /opt
+COPY *.cpp version.h Makefile_linux.mak /opt/
+
+RUN make -f Makefile_linux.mak install clean
+
+ENV PATH=/root/bin:$PATH
+
+
+# Clean up
+RUN rm -rf /opt/*
 
 
 # Set working directory

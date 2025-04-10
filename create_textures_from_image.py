@@ -10,7 +10,7 @@ input_base = Path('./data/input_images')
 textures_base = Path('./data/textures')
 cnn_script = Path('./packages/cnnmasktomanuseg/cnnmasktomanuseg.py')
 iris_code_base = Path('./data/irisCode')  # Output folder (where irisCode images will be saved)
-codes_base = Path('./data/codes')  # Input folder (where .png files are stored after lg conversion)
+codes_base = Path('./data/codes')  # Input folder (where .bmp files are stored after lg conversion)
 
 # Function to calculate USIT code
 def calculate_usit_code(img):
@@ -101,7 +101,7 @@ for mask_file in masks_base.rglob('*.png'):
     output_lg_dir.mkdir(parents=True, exist_ok=True)  # Create the necessary dirs for lg output
 
     # Using the stem name for the output file
-    output_lg_file = output_lg_dir / f"{stem}.png"
+    output_lg_file = output_lg_dir / f"{stem}.bmp"
 
     cmd4 = [
         'lg',
@@ -144,7 +144,7 @@ for mask_file in masks_base.rglob('*.png'):
     iris_code_dir.mkdir(parents=True, exist_ok=True)  # Ensure subdirectories exist
 
     # Save the binary code as an image
-    iris_code_image_path = iris_code_dir / f"{stem}_irisCode.png"
+    iris_code_image_path = iris_code_dir / f"{stem}_irisCode.bmp"
     save_binary_code_as_image(binary_code, str(iris_code_image_path))
 
     print(f"Binary code saved as image: {iris_code_image_path}")

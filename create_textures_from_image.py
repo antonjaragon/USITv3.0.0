@@ -3,6 +3,18 @@ import cv2
 import numpy as np
 from pathlib import Path
 
+import logging
+
+# Set up logging
+logging.basicConfig(
+    filename='errors.log',
+    filemode='a',  # Append mode
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.ERROR
+)
+
+
+
 # Base paths
 masks_base = Path('./data/masks')
 circles_base = Path('./data/circles')
@@ -109,28 +121,45 @@ for mask_file in masks_base.rglob('*.png'):
         '-o', str(output_lg_file)
     ]
 
-    print(f"\nRunning CNN mask to manuseg for: {mask_file}")
-    subprocess.run(cmd1, check=True)
-
-    # Try to process the correct input TIFF/TIF file
     try:
-        print(f"Running manuseg (default) for: {input_tiff}")
-        subprocess.run(cmd2, check=True)
-    except FileNotFoundError:
-        print(f"Input TIFF not found, trying with .tif for: {input_tif}")
-        cmd2[1] = str(input_tif)  # Switch to .tif file
-        subprocess.run(cmd2, check=True)
+        print(f"\nRunning CNN mask to manuseg for: {mask_file}")
+        try:
+            subprocess.run(cmd1, check=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(f"cmd1 failed for {mask_file}: {e}")
+            continue
 
-    try:
-        print(f"Running manuseg (enhanced) for: {input_tiff}")
-        subprocess.run(cmd3, check=True)
-    except FileNotFoundError:
-        print(f"Input TIFF not found, trying with .tif for: {input_tif}")
-        cmd3[1] = str(input_tif)  # Switch to .tif file
-        subprocess.run(cmd3, check=True)
+        # Determine which input file exists: .tiff or .tif
+        input_image = input_tiff if input_tiff.exists() else input_tif
 
-    print(f"Running lg command to convert texture to image for: {output_texture}")
-    subprocess.run(cmd4, check=True)
+        # Update commands with the correct input image
+        cmd2[2] = str(input_image)
+        cmd3[2] = str(input_image)
+
+        print(f"Running manuseg (default) for: {input_image}")
+        try:
+            subprocess.run(cmd2, check=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(f"cmd2 failed for {input_image}: {e}")
+            continue
+
+        print(f"Running manuseg (enhanced) for: {input_image}")
+        try:
+            subprocess.run(cmd3, check=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(f"cmd3 failed for {input_image}: {e}")
+            continue
+
+        print(f"Running lg command for: {output_texture}")
+        try:
+            subprocess.run(cmd4, check=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(f"cmd4 (lg) failed for {output_texture}: {e}")
+            continue
+        
+    except Exception as e:
+        logging.error(f"Unexpected error for {mask_file}: {str(e)}")
+        continue
 
     # --------- Step 2: Generate IrisCode for each file immediately after processing the texture ---------
     # Read the generated texture image for the irisCode calculation
